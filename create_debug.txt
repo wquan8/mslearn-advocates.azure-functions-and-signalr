@@ -1,0 +1,27 @@
+Using resource group quan6530-signalr-4f4e344b3f
+Subscription Name: Pay-As-You-Go DEV 
+Resource Group Name: quan6530-signalr-4f4e344b3f
+Storage Account Name: signalr7086f5f664
+CosmosDB Name: signalr-cosmos-f9f13907
+
+az cosmosdb create  \
+  --subscription "Pay-As-You-Go DEV" \
+  --name signalr-cosmos-f9f13907 \
+  --resource-group quan6530-signalr-4f4e344b3f
+
+az cosmosdb sql database create \
+    --account-name signalr-cosmos-f9f13907 \
+    --name stocksdb
+
+az cosmosdb sql container create \
+    --account-name signalr-cosmos-f9f13907 \
+    --database-name stocksdb \
+    --name stocks \
+    --partition-key-path /symbol
+
+$(az storage account show-connection-string \
+--name $(az storage account list \
+  --resource-group quan6530-signalr-4f4e344b3f \
+  --query [0].name -o tsv) \
+--resource-group quan6530-signalr-4f4e344b3f \
+--query "connectionString" -o tsv)
